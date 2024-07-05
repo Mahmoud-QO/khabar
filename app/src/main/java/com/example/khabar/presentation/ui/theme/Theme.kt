@@ -1,6 +1,6 @@
-package com.example.khabar.ui.theme
+package com.example.khabar.presentation.ui.theme
 
-import android.app.Activity
+import android.content.res.Configuration
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -8,7 +8,13 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
@@ -33,11 +39,15 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+val LocalDimens = compositionLocalOf { compactDimensions }
+
 @Composable
 fun KhabarTheme(
+//    windowSizeClass: WindowSizeClass, // TODO[L]: replace width & height with windowSizeClass
+    widthSizeClass: WindowWidthSizeClass,
+    heightSizeClass: WindowHeightSizeClass,
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = true, // Dynamic color is available on Android 12+
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -50,9 +60,15 @@ fun KhabarTheme(
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    val adaptation = rememberThemeAdaptation(widthSizeClass, heightSizeClass)
+
+    CompositionLocalProvider(
+        LocalDimens provides adaptation.dimensions,
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = adaptation.typography,
+            content = content
+        )
+    }
 }
