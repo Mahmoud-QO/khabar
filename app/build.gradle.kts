@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.material3)
 
     implementation(libs.androidx.material3.window.size.classes)
+    implementation(libs.androidx.core.splashscreen)
 
     testImplementation(libs.junit)
 

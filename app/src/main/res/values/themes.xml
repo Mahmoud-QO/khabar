@@ -2,4 +2,11 @@
 <resources>
 
     <style name="Theme.Khabar" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.Khabar.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/avd_splash_screen</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="postSplashScreenTheme">@style/Theme.Khabar</item>
+    </style>
+
 </resources>

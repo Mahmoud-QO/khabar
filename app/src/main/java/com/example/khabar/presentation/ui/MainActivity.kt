@@ -14,6 +14,7 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.khabar.presentation.ui.screen.onboarding.OnboardingScreen
 import com.example.khabar.presentation.ui.theme.KhabarTheme
 
@@ -23,6 +24,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        installSplashScreen()
+
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
             KhabarTheme(windowSizeClass.widthSizeClass, windowSizeClass.heightSizeClass) {
