@@ -3,9 +3,11 @@ package com.example.khabar.data.repository
 import com.example.khabar.data.datastore.PreferencesDataStore
 import com.example.khabar.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class UserRepositoryImpl(private val preferencesDataStore: PreferencesDataStore): UserRepository
-{
+class UserRepositoryImpl @Inject constructor(
+    private val preferencesDataStore: PreferencesDataStore
+): UserRepository {
     override fun isOnboardingCompleted(): Flow<Boolean> =
         preferencesDataStore.getOnboardingCompleted()
 

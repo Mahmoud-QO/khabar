@@ -39,13 +39,19 @@ import com.example.khabar.R
 import com.example.khabar.presentation.ui.component.PagerIndicator
 import com.example.khabar.presentation.ui.theme.KhabarTheme
 import com.example.khabar.presentation.ui.theme.LocalDimens
+import com.example.khabar.presentation.viewmodel.onboarding.OnboardingEvent
 import kotlinx.coroutines.launch
 
 // TODO: use OnboardingPager as a custom layout
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun OnboardingPager(pages: List<OnboardingPage>, modifier: Modifier = Modifier) {
-    val pagerState = rememberPagerState(initialPage = 0) { pages.size }
+fun OnboardingPager(
+    pages: List<OnboardingPage>,
+    modifier: Modifier = Modifier,
+    initialPage: Int = 0,
+    onEvent: (OnboardingEvent) -> Unit = {}
+) {
+    val pagerState = rememberPagerState(initialPage = initialPage) { pages.size }
 
     HorizontalPager(state = pagerState, modifier = modifier) {
         val page = pages[it]
@@ -58,7 +64,9 @@ fun OnboardingPager(pages: List<OnboardingPage>, modifier: Modifier = Modifier) 
         } else {
             Column(modifier = Modifier.fillMaxSize()) {
                 FirstContentPart(page, Modifier.fillMaxSize().weight(1f))
-                SecondContentPart(page, pagerState, Modifier.fillMaxSize().weight(1f))
+                SecondContentPart(
+                    page, pagerState, Modifier.fillMaxSize().weight(1f)
+                ) { onEvent(OnboardingEvent.ClickGetStarted) }
             }
         }
     }
@@ -74,7 +82,9 @@ private fun FirstContentPart(page: OnboardingPage, modifier: Modifier = Modifier
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SecondContentPart(
-    page: OnboardingPage, pagerState: PagerState, modifier: Modifier = Modifier
+    page: OnboardingPage, pagerState: PagerState,
+    modifier: Modifier = Modifier,
+    onClickGetStarted: () -> Unit = {}
 ) = Card(
     modifier = modifier,
     shape = RoundedCornerShape(topStart = LocalDimens.current.extraLarge)

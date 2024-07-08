@@ -17,8 +17,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.khabar.presentation.ui.screen.onboarding.OnboardingScreen
 import com.example.khabar.presentation.ui.theme.KhabarTheme
+import dagger.hilt.android.AndroidEntryPoint
 
-class MainActivity : ComponentActivity() {
+@AndroidEntryPoint
+class MainActivity : ComponentActivity()
+{
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
