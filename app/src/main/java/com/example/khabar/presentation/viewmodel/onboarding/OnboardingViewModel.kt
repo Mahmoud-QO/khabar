@@ -1,8 +1,10 @@
 package com.example.khabar.presentation.viewmodel.onboarding
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.khabar.domain.usecase.OnboardingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,14 +16,18 @@ import javax.inject.Inject
 class OnboardingViewModel @Inject constructor(
 	private val onboardingUseCase: OnboardingUseCase
 ) : ViewModel() {
-    private val _state = MutableStateFlow(true)
-    val state = _state.asStateFlow()
+
+	var navigateToHome by mutableStateOf(true); private set
 
 	fun onEvent(onboardingEvent: OnboardingEvent) {
 		when (onboardingEvent) {
-			is OnboardingEvent.ClickGetStarted -> onClickGetStarted()
+			OnboardingEvent.ClickGetStarted -> completeOnboarding()
+			OnboardingEvent.ClickSkip -> completeOnboarding()
 		}
 	}
 
-	private fun onClickGetStarted() = viewModelScope.launch { onboardingUseCase.completeOnboarding }
+	private fun completeOnboarding() = viewModelScope.launch {
+		onboardingUseCase.completeOnboarding()
+		navigateToHome = true
+	}
 }

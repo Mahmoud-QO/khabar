@@ -6,7 +6,6 @@ import com.example.khabar.domain.repository.UserRepository
 import javax.inject.Inject
 
 data class OnboardingUseCase(
-    val getOnboardingStatus: GetOnboardingStatusUseCase,
     val completeOnboarding: CompleteOnboardingUseCase
 )
 
