@@ -5,23 +5,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.activity.viewModels
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.khabar.presentation.ui.screen.onboarding.OnboardingScreen
 import com.example.khabar.presentation.ui.theme.KhabarTheme
+import com.example.khabar.presentation.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity()
 {
+    private val viewModel by viewModels<MainViewModel>()
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -29,16 +31,31 @@ class MainActivity : ComponentActivity()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        installSplashScreen()
-
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
+            val navController = rememberNavController()
+
             KhabarTheme(windowSizeClass.widthSizeClass, windowSizeClass.heightSizeClass) {
-                // TODO[H]: consider paddings for navigation bar
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    OnboardingScreen()
+
+                val splashScreenCondition by viewModel.splashScreenCondition.collectAsState()
+                val isOnboardingCompleted by viewModel.isOnboardingCompleted.collectAsState()
+
+                val startDestination = if (isOnboardingCompleted)
+                    Route.HomeScreen else Route.OnboardingScreen
+
+                installSplashScreen().setKeepOnScreenCondition { splashScreenCondition }
+
+                NavHost(navController = navController, startDestination = startDestination) {
+                    composable<Route.OnboardingScreen> {
+                        OnboardingScreen(navController)
+                    }
+
+                    composable<Route.HomeScreen> {
+                        Text(text = "Hello World!")
+                    }
                 }
             }
         }
     }
 }
+

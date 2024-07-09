@@ -5,6 +5,7 @@ import android.content.Context
 import com.example.khabar.data.datastore.PreferencesDataStore
 import com.example.khabar.data.repository.UserRepositoryImpl
 import com.example.khabar.domain.repository.UserRepository
+import com.example.khabar.domain.usecase.AppEntryUseCase
 import com.example.khabar.domain.usecase.GetOnboardingStatusUseCase
 import com.example.khabar.domain.usecase.CompleteOnboardingUseCase
 import com.example.khabar.domain.usecase.OnboardingUseCase
@@ -20,11 +21,13 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideAppEntryUseCase(userRepository: UserRepository): AppEntryUseCase =
+        AppEntryUseCase(getOnboardingStatus = GetOnboardingStatusUseCase(userRepository))
+
+    @Provides
+    @Singleton
     fun provideOnboardingUseCase(userRepository: UserRepository): OnboardingUseCase =
-        OnboardingUseCase(
-            getOnboardingStatus = GetOnboardingStatusUseCase(userRepository),
-            completeOnboarding = CompleteOnboardingUseCase(userRepository)
-        )
+        OnboardingUseCase(completeOnboarding = CompleteOnboardingUseCase(userRepository))
 
     @Provides
     @Singleton

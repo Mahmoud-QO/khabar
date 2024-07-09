@@ -43,15 +43,13 @@ import com.example.khabar.presentation.viewmodel.onboarding.OnboardingEvent
 import kotlinx.coroutines.launch
 
 // TODO: use OnboardingPager as a custom layout
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingPager(
     pages: List<OnboardingPage>,
     modifier: Modifier = Modifier,
-    initialPage: Int = 0,
     onEvent: (OnboardingEvent) -> Unit = {}
 ) {
-    val pagerState = rememberPagerState(initialPage = initialPage) { pages.size }
+    val pagerState = rememberPagerState(initialPage = 0) { pages.size }
 
     HorizontalPager(state = pagerState, modifier = modifier) {
         val page = pages[it]
@@ -65,8 +63,8 @@ fun OnboardingPager(
             Column(modifier = Modifier.fillMaxSize()) {
                 FirstContentPart(page, Modifier.fillMaxSize().weight(1f))
                 SecondContentPart(
-                    page, pagerState, Modifier.fillMaxSize().weight(1f)
-                ) { onEvent(OnboardingEvent.ClickGetStarted) }
+                    page, pagerState, Modifier.fillMaxSize().weight(1f), onEvent
+                )
             }
         }
     }
@@ -79,12 +77,12 @@ private fun FirstContentPart(page: OnboardingPage, modifier: Modifier = Modifier
     modifier = modifier
 )
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Composable
 private fun SecondContentPart(
     page: OnboardingPage, pagerState: PagerState,
     modifier: Modifier = Modifier,
-    onClickGetStarted: () -> Unit = {}
+    onEvent: (OnboardingEvent) -> Unit = {}
 ) = Card(
     modifier = modifier,
     shape = RoundedCornerShape(topStart = LocalDimens.current.extraLarge)
@@ -113,7 +111,7 @@ private fun SecondContentPart(
         if (pagerState.currentPage == pagerState.pageCount - 1) {
             Button(
                 modifier = Modifier.size(dimens.extraLarge*3, dimens.extraLarge),
-                onClick = { /*TODO*/ }
+                onClick = { onEvent(OnboardingEvent.ClickGetStarted) }
             ) {
                 Text(
                     text = "Get Started",
@@ -127,7 +125,7 @@ private fun SecondContentPart(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth().wrapContentHeight()
             ) {
-                TextButton(onClick = { /*TODO*/ }) {
+                TextButton(onClick = { onEvent(OnboardingEvent.ClickSkip) }) {
                     Text(
                         text = "Skip Now",
                         style = MaterialTheme.typography.titleLarge,
