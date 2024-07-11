@@ -10,11 +10,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.khabar.presentation.ui.screen.onboarding.OnboardingScreen
 import com.example.khabar.presentation.ui.theme.KhabarTheme
 import com.example.khabar.presentation.viewmodel.MainViewModel
@@ -51,7 +55,12 @@ class MainActivity : ComponentActivity()
                     }
 
                     composable<Route.HomeScreen> {
-                        Text(text = "Hello World!")
+                        val lazyPagingItems = viewModel.topHeadlines.collectAsLazyPagingItems()
+                        val articles by remember {
+                            derivedStateOf { lazyPagingItems.itemSnapshotList.items }
+                        }
+
+                        Text(text = articles.toString(), color = Color.Red)
                     }
                 }
             }

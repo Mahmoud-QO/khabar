@@ -9,14 +9,10 @@ data class OnboardingUseCase(
     val completeOnboarding: CompleteOnboardingUseCase
 )
 
-class GetOnboardingStatusUseCase @Inject constructor(
-    private val userRepository: UserRepository
-) {
+class GetOnboardingStatusUseCase @Inject constructor(private val userRepository: UserRepository) {
     operator fun invoke() = userRepository.isOnboardingCompleted()
 }
 
-class CompleteOnboardingUseCase @Inject constructor(
-    private val userRepository: UserRepository
-) {
+class CompleteOnboardingUseCase @Inject constructor(private val userRepository: UserRepository) {
     suspend operator fun invoke() = userRepository.setOnboardingCompleted()
 }
