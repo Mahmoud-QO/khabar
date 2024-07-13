@@ -6,7 +6,7 @@ import com.example.khabar.domain.model.Article
 
 class NewsPagingSource(
     private val newsApiService: NewsApiService,
-    private val endpoint: NewsEndpoint
+    private val endpoint: PageableNewsEndpoint
 ) : PagingSource<Int, Article>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         return try {
@@ -14,12 +14,12 @@ class NewsPagingSource(
             val loadSize = params.loadSize
 
             val response = when (endpoint) {
-                is NewsEndpoint.TopHeadlines ->
-                    newsApiService.getTopHeadlines(endpoint.country, page, loadSize)
-                is NewsEndpoint.Everything ->
-                    newsApiService.getNews(endpoint.sources, page, loadSize)
-                is NewsEndpoint.Search ->
-                    newsApiService.searchNews(endpoint.query, endpoint.sources, page, loadSize)
+                is PageableNewsEndpoint.Everything -> newsApiService.getEverything(
+                    endpoint.sources, endpoint.query, endpoint.sortBy, page, loadSize
+                )
+                is PageableNewsEndpoint.TopHeadlines -> newsApiService.getTopHeadlines(
+                    endpoint.sources, endpoint.country, endpoint.country, page, loadSize
+                )
             }
 
             LoadResult.Page(
@@ -44,4 +44,14 @@ class NewsPagingSource(
         }
          */
     }
+}
+
+sealed interface PageableNewsEndpoint {
+    data class Everything(
+        val sources: String, val query: String? = null, val sortBy: String? = null
+    ) : PageableNewsEndpoint
+
+    data class TopHeadlines(
+        val sources: String, val country: String? = null, val category: String? = null
+    ) : PageableNewsEndpoint
 }

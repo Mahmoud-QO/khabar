@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -56,11 +58,16 @@ class MainActivity : ComponentActivity()
 
                     composable<Route.HomeScreen> {
                         val lazyPagingItems = viewModel.topHeadlines.collectAsLazyPagingItems()
+                        val newsSources by viewModel.newsSources.collectAsState()
                         val articles by remember {
                             derivedStateOf { lazyPagingItems.itemSnapshotList.items }
                         }
 
-                        Text(text = articles.toString(), color = Color.Red)
+                        LazyColumn {
+                            items(newsSources) {
+                                Text(text = "${it.name} - ${it.id}", color = Color.Red)
+                            }
+                        }
                     }
                 }
             }

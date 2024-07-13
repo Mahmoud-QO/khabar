@@ -11,7 +11,7 @@ import com.example.khabar.domain.repository.UserRepository
 import com.example.khabar.domain.usecase.AppEntryUseCase
 import com.example.khabar.domain.usecase.GetOnboardingStatusUseCase
 import com.example.khabar.domain.usecase.CompleteOnboardingUseCase
-import com.example.khabar.domain.usecase.GetNewsUseCase
+import com.example.khabar.domain.usecase.GetSourcesUseCase
 import com.example.khabar.domain.usecase.GetTopHeadlinesUseCase
 import com.example.khabar.domain.usecase.NewsUseCase
 import com.example.khabar.domain.usecase.OnboardingUseCase
@@ -33,8 +33,8 @@ object AppModule
     fun provideNewsUseCase(newsRepository: NewsRepository): NewsUseCase =
         NewsUseCase(
             getTopHeadlines = GetTopHeadlinesUseCase(newsRepository),
-            getNews = GetNewsUseCase(newsRepository),
-            searchNews = SearchNewsUseCase(newsRepository)
+            searchNews = SearchNewsUseCase(newsRepository),
+            getSources = GetSourcesUseCase(newsRepository)
         )
 
     @Provides

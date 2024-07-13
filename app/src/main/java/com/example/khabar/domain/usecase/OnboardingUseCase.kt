@@ -1,7 +1,5 @@
 package com.example.khabar.domain.usecase
 
-import com.example.khabar.data.datastore.PreferencesDataStore
-import com.example.khabar.data.repository.UserRepositoryImpl
 import com.example.khabar.domain.repository.UserRepository
 import javax.inject.Inject
 

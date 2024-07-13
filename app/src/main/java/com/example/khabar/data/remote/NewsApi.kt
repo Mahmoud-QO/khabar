@@ -18,37 +18,33 @@ object NewsApi
     val newsApiService : NewsApiService by lazy { retrofit.create(NewsApiService::class.java) }
 }
 
-sealed class NewsEndpoint {
-    data class TopHeadlines(val country: String) : NewsEndpoint()
-    data class Everything(val sources: String) : NewsEndpoint()
-    data class Search(val query: String, val sources: String) : NewsEndpoint()
-}
-
 interface NewsApiService
 {
     @GET("everything")
-    suspend fun getNews(
+    suspend fun getEverything(
         @Query("sources") sources: String,
+        @Query("q") searchQuery: String? = null,
+        @Query("sortBy") sortBy: String? = null,
         @Query("page") page: Int,
         @Query("pageSize") pageSize: Int,
         @Query("apiKey") apiKey: String = NEWS_API_KEY
-    ): NewsResponse
-
-    @GET("everything")
-    suspend fun searchNews(
-        @Query("q") searchQuery: String,
-        @Query("sources") sources: String,
-        @Query("page") page: Int,
-        @Query("pageSize") pageSize: Int,
-        @Query("apiKey") apiKey: String = NEWS_API_KEY
-    ): NewsResponse
+    ): NewsArticlesResponse
 
     @GET("top-headlines")
     suspend fun getTopHeadlines(
-        @Query("country") country: String,
+        @Query("sources") sources: String,
+        @Query("country") country: String? = null,
+        @Query("category") category: String? = null,
         @Query("page") page: Int,
         @Query("pageSize") pageSize: Int,
         @Query("apiKey") apiKey: String = NEWS_API_KEY
-    ): NewsResponse
+    ): NewsArticlesResponse
 
+    @GET("top-headlines/sources")
+    suspend fun getSources(
+        @Query("country") country: String? = null,
+        @Query("category") category: String? = null,
+        @Query("language") language: String? = null,
+        @Query("apiKey") apiKey: String = NEWS_API_KEY
+    ): NewsSourcesResponse
 }

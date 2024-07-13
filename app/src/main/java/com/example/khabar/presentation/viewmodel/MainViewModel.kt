@@ -3,6 +3,7 @@ package com.example.khabar.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.example.khabar.domain.model.NewsSource
 import com.example.khabar.domain.usecase.AppEntryUseCase
 import com.example.khabar.domain.usecase.NewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +25,12 @@ class MainViewModel @Inject constructor(
     private val _isOnboardingCompleted = MutableStateFlow(false)
     val isOnboardingCompleted = _isOnboardingCompleted.asStateFlow()
 
-    val topHeadlines = newsUseCase.getTopHeadlines("eg").cachedIn(viewModelScope)
+    private val _newsSources = MutableStateFlow(emptyList<NewsSource>())
+    val newsSources = _newsSources.asStateFlow()
+
+    val topHeadlines = newsUseCase.getTopHeadlines(
+        listOf("google-news", "al-jazeera-english", "bbc-news", "cnn", "fox-news", "bloomberg")
+    ).cachedIn(viewModelScope)
 
     init {
         viewModelScope.launch {
@@ -32,6 +38,12 @@ class MainViewModel @Inject constructor(
                 _isOnboardingCompleted.value = it
                 delay(500)
                 _splashScreenCondition.value = false
+            }
+        }
+
+        viewModelScope.launch {
+            newsUseCase.getSources().collect {
+                _newsSources.value = it
             }
         }
     }
